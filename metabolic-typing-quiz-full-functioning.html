@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>What is Your Metabolic Type?</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f4f4f4;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    #quiz-container {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+      width: 100%;
+    }
+    .question {
+      margin-bottom: 1rem;
+    }
+    .question h3 {
+      margin-bottom: 0.5rem;
+    }
+    .options label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #result {
+      font-weight: bold;
+      margin-top: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="quiz-container">
+    <h1>What is Your Metabolic Type?</h1>
+    <p>Please answer the following 23 questions honestly and truthfully based historically how you have felt around health, food, and exercise.</p>
+    <div id="quiz"></div>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const quizData = [
+      { question: "How do you feel after eating a high-carb meal?", options: ["Energised", "Sluggish", "Neutral"] },
+      { question: "Do you feel better when you eat more fat?", options: ["Yes", "No", "Not sure"] },
+      { question: "How do you feel after eating a high-protein meal?", options: ["Energised", "Sluggish", "Neutral"] },
+      { question: "What happens when you skip a meal?", options: ["Fatigue/irritability", "Little impact", "Feel better"] },
+      { question: "Do you crave salty or fatty foods?", options: ["Often", "Rarely", "Sometimes"] },
+      { question: "Do you crave sugar and carbs?", options: ["Often", "Rarely", "Sometimes"] },
+      { question: "Do you gain weight easily?", options: ["Yes", "No", "Sometimes"] },
+      { question: "Do you experience energy dips in the afternoon?", options: ["Often", "Rarely", "Sometimes"] },
+      { question: "How do you feel after coffee?", options: ["Calm/Focused", "Jittery", "No difference"] },
+      { question: "Do you prefer intense workouts or gentle movement?", options: ["Intense", "Gentle", "Both"] },
+      { question: "How is your sleep quality?", options: ["Excellent", "Poor", "Average"] },
+      { question: "Do you struggle to gain muscle mass?", options: ["Yes", "No", "Not sure"] },
+      { question: "How does dairy affect you?", options: ["Energised", "Sluggish", "No impact"] },
+      { question: "Do you snack frequently?", options: ["Yes", "No", "Sometimes"] },
+      { question: "What best describes your appetite?", options: ["Strong", "Light", "Variable"] },
+      { question: "How does stress affect your digestion?", options: ["Negatively", "No impact", "Not sure"] },
+      { question: "How do you feel in cold weather?", options: ["Energised", "Tired", "No change"] },
+      { question: "How do you feel in hot weather?", options: ["Energised", "Tired", "No change"] },
+      { question: "Do you tend to be more anxious or calm?", options: ["Anxious", "Calm", "Variable"] },
+      { question: "Do you retain water easily?", options: ["Yes", "No", "Sometimes"] },
+      { question: "Do you suffer from frequent bloating?", options: ["Often", "Rarely", "Sometimes"] },
+      { question: "Do you get lightheaded easily?", options: ["Yes", "No", "Sometimes"] },
+      { question: "How is your focus and mental clarity?", options: ["Sharp", "Foggy", "Variable"] }
+    ];
+
+    let currentQuestion = 0;
+    const answers = [];
+    const quizContainer = document.getElementById("quiz");
+    const resultContainer = document.getElementById("result");
+
+    function showQuestion() {
+      const q = quizData[currentQuestion];
+      quizContainer.innerHTML = `
+        <div class="question">
+          <h3>${currentQuestion + 1}. ${q.question}</h3>
+          <div class="options">
+            ${q.options.map((opt, i) => `
+              <label>
+                <input type="radio" name="question" value="${i}" />
+                ${opt}
+              </label>
+            `).join('')}
+          </div>
+          <button onclick="nextQuestion()">Next</button>
+        </div>
+      `;
+    }
+
+    function nextQuestion() {
+      const selected = document.querySelector('input[name="question"]:checked');
+      if (!selected) return alert("Please select an answer");
+      answers.push(parseInt(selected.value));
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      const count = { A: 0, B: 0, C: 0 };
+      answers.forEach(val => {
+        if (val === 0) count.A++;
+        else if (val === 1) count.B++;
+        else count.C++;
+      });
+
+      let result;
+      if (count.A > count.B && count.A > count.C) {
+        result = "You are a Protein Type.";
+      } else if (count.B > count.A && count.B > count.C) {
+        result = "You are a Carbohydrate Type.";
+      } else {
+        result = "You are a Mixed Type.";
+      }
+      quizContainer.innerHTML = '';
+      resultContainer.innerHTML = result;
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
